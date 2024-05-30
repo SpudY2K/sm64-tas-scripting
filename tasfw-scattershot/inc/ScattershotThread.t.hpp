@@ -243,7 +243,7 @@ bool ScattershotThread<TState, TResource, TStateTracker, TOutputState>::Validate
 {
     TState currentStateBin = GetStateBinSafe();
     if (BaseBlockStateBin != currentStateBin) {
-        this->ExportM64("C:\\repos\\sm64-tas-scripting\\analysis\\error.m64", this->GetTotalDiff().frames.rbegin()->first + 1);
+        this->ExportM64("C:\\Users\\User\\source\\repos\\sm64-tas-scripting\\analysis\\error.m64", this->GetTotalDiff().frames.rbegin()->first + 1);
         std::cout << Id << " " << shot << "\n";
         //BaseBlockStateBin.print();
         //currentStateBin.print();
@@ -503,12 +503,18 @@ AdhocBaseScriptStatus ScattershotThread<TState, TResource, TStateTracker, TOutpu
                 {
                     scattershot.ScriptCount++;
 
-                    if (!validated)
+                    if (!validated) {
+                        //printf("%d: F\n", n);
                         scattershot.FailedScripts++;
-                    else if (novelScript)
+                    }
+                    else if (novelScript) {
+                        //printf("%d: D\n", n);
                         scattershot.NovelScripts++;
-                    else
+                    }
+                    else {
+                        //printf("%d: R\n", n);
                         scattershot.RedundantScripts++;
+                    }
                 }
 
                 if (!validated)

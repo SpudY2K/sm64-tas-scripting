@@ -34,7 +34,7 @@ public:
     int64_t equilibriumFrame = -1;
 };
 
-class TiltTargetShotMetrics : public Script<LibSm64>
+class TiltTargetShotMetrics : public Script<BitFSPlatformSim>
 {
 public:
     int64_t _startFrame = 0;
@@ -333,8 +333,8 @@ private:
     }
 };
 
-using Alias_ScattershotThread_TiltTargetShot = ScattershotThread<BinaryStateBin<16>, LibSm64, TiltTargetShotMetrics, TiltTargetShotSolution>;
-using Alias_Scattershot_TiltTargetShot = Scattershot<BinaryStateBin<16>, LibSm64, TiltTargetShotMetrics, TiltTargetShotSolution>;
+using Alias_ScattershotThread_TiltTargetShot = ScattershotThread<BinaryStateBin<16>, BitFSPlatformSim, TiltTargetShotMetrics, TiltTargetShotSolution>;
+using Alias_Scattershot_TiltTargetShot = Scattershot<BinaryStateBin<16>, BitFSPlatformSim, TiltTargetShotMetrics, TiltTargetShotSolution>;
 
 class TiltTargetShot : public Alias_ScattershotThread_TiltTargetShot
 {

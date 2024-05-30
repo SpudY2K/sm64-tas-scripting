@@ -4,11 +4,12 @@
 #include <LibSm64.hpp>
 #include <PyramidUpdate.hpp>
 #include <BitFSPyramidOscillation.hpp>
+#include "BitFSPlatformSim.hpp"
 
 #ifndef BITFS_SC_APPROACH_H
 #define BITFS_SC_APPROACH_H
 
-class BitFsScApproach : public Script<LibSm64>
+class BitFsScApproach : public Script<BitFSPlatformSim>
 {
 public:
 	class CustomScriptStatus
@@ -43,7 +44,7 @@ private:
 	float _xzSumIncrement = 0;
 };
 
-class BitFsScApproach_AttemptDr_BF : public Script<LibSm64>
+class BitFsScApproach_AttemptDr_BF : public Script<BitFSPlatformSim>
 {
 public:
 	class CustomScriptStatus
@@ -70,7 +71,7 @@ private:
 	float _initialXzSum = 0;
 };
 
-class BitFsScApproach_AttemptDr : public Script<LibSm64>
+class BitFsScApproach_AttemptDr : public Script<BitFSPlatformSim>
 {
 public:
 	class CustomScriptStatus

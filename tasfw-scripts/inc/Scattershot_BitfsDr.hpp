@@ -33,7 +33,7 @@ public:
     float regionsMinor = 0;
 };
 
-class StateTracker_BitfsDr : public Script<LibSm64>
+class StateTracker_BitfsDr : public Script<BitFSPlatformSim>
 {
 public:
     enum class Phase
@@ -112,8 +112,8 @@ private:
     void CalculatePhase(CustomScriptStatus lastFrameState, MarioState* marioState, Object* pyramid);
 };
 
-using Alias_ScattershotThread_BitfsDr = ScattershotThread<BinaryStateBin<16>, LibSm64, StateTracker_BitfsDr, Scattershot_BitfsDr_Solution>;
-using Alias_Scattershot_BitfsDr = Scattershot<BinaryStateBin<16>, LibSm64, StateTracker_BitfsDr, Scattershot_BitfsDr_Solution>;
+using Alias_ScattershotThread_BitfsDr = ScattershotThread<BinaryStateBin<16>, BitFSPlatformSim, StateTracker_BitfsDr, Scattershot_BitfsDr_Solution>;
+using Alias_Scattershot_BitfsDr = Scattershot<BinaryStateBin<16>, BitFSPlatformSim, StateTracker_BitfsDr, Scattershot_BitfsDr_Solution>;
 
 class Scattershot_BitfsDr : public Alias_ScattershotThread_BitfsDr
 {

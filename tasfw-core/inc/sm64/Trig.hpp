@@ -1,7 +1,13 @@
 #pragma once
 
+#ifndef TRIG_H
+#define TRIG_H
+
 #include <array>
 #include <cstdint>
+
+#define sins(x) gSineTable[(u16) (x) >> 4]
+#define coss(x) gCosineTable[(u16) (x) >> 4]
 
 constexpr std::array<float, 4096> gSineTable = {
 	0.000000000f,	0.0015339801f,	0.0030679568f,	0.004601926f,
@@ -2173,16 +2179,6 @@ constexpr std::array<int16_t, 1025> gArctanTable = {
 	0x1FDC, 0x1FE1, 0x1FE6, 0x1FEC, 0x1FF1, 0x1FF6, 0x1FFB, 0x2000,
 };
 
-constexpr float sins(uint16_t x)
-{
-	return gSineTable[x >> 4];
-}
-
-constexpr float coss(uint16_t x)
-{
-	return gCosineTable[x >> 4];
-}
-
 constexpr int16_t atan2_lookup(float z, float x)
 {
 	return (x == 0) ? gArctanTable[0] :
@@ -2219,3 +2215,4 @@ constexpr int16_t atan2s(float z, float x)
 		}
 	}
 }
+#endif

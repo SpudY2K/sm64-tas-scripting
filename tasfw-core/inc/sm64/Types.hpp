@@ -1,6 +1,10 @@
 #pragma once
 
+#ifndef TYPES_H
+#define TYPES_H
+
 #include <sm64/UltraTypes.hpp>
+#include <sm64/os_cont.hpp>
 
 typedef f32 Vec2f[2];
 typedef f32 Vec3f[3];	 // X, Y, Z, where Y is up
@@ -15,11 +19,23 @@ typedef uintptr_t GeoLayout;
 typedef uintptr_t LevelScript;
 typedef s16 Movtex;
 typedef s16 MacroObject;
-typedef s16 Collision;
+typedef s16 Collision; // Collision data is limited to -32768 to 32767. Change this if you want to increase it.
 typedef s16 Trajectory;
 typedef s16 PaintingData;
 typedef uintptr_t BehaviorScript;
 typedef u8 Texture;
+typedef s8 RoomData; // Rooms are limited to -128 to 127. Change the type if you wish to have more rooms.
+typedef Collision TerrainData;
+typedef TerrainData Vec3Terrain[3];
+
+#define ANIM_FLAG_NOLOOP     (1 << 0) // 0x01
+#define ANIM_FLAG_BACKWARD   (1 << 1) // 0x02
+#define ANIM_FLAG_2          (1 << 2) // 0x04
+#define ANIM_FLAG_HOR_TRANS  (1 << 3) // 0x08
+#define ANIM_FLAG_VERT_TRANS (1 << 4) // 0x10
+#define ANIM_FLAG_5          (1 << 5) // 0x20
+#define ANIM_FLAG_6          (1 << 6) // 0x40
+#define ANIM_FLAG_7          (1 << 7) // 0x80
 
 struct Animation
 {
@@ -271,3 +287,17 @@ struct MarioState
 	/*0xC0*/ f32 quicksandDepth;
 	/*0xC4*/ f32 unkC4;
 };
+
+struct Controller {
+	/*0x00*/ s16 rawStickX;       //
+	/*0x02*/ s16 rawStickY;       //
+	/*0x04*/ float stickX;        // [-64, 64] positive is right
+	/*0x08*/ float stickY;        // [-64, 64] positive is up
+	/*0x0C*/ float stickMag;      // distance from center [0, 64]
+	/*0x10*/ u16 buttonDown;
+	/*0x12*/ u16 buttonPressed;
+	/*0x14*/ OSContStatus* statusData;
+	/*0x18*/ OSContPad* controllerData;
+};
+
+#endif

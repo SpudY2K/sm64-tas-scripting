@@ -1,7 +1,13 @@
 #pragma once
 
+#ifndef _ULTRA64_TYPES_H_
+#define _ULTRA64_TYPES_H_
+
 #include <stddef.h>
 #include <stdint.h>
+
+#define TRUE 1
+#define FALSE 0
 
 typedef signed char s8;
 typedef unsigned char u8;
@@ -25,3 +31,5 @@ typedef float f32;
 typedef double f64;
 
 typedef ptrdiff_t ssize_t;
+
+#endif

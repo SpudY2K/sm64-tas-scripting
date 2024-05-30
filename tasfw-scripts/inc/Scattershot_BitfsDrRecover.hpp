@@ -137,7 +137,7 @@ private:
     };
 };
 
-class StateTracker_BitfsDrRecover : public Script<LibSm64>
+class StateTracker_BitfsDrRecover : public Script<BitFSPlatformSim>
 {
 public:
     enum class Phase
@@ -332,8 +332,8 @@ public:
     float xzSum = 0;
 };
 
-using Alias_ScattershotThread_BitfsDrRecover = ScattershotThread<BinaryStateBin<16>, LibSm64, StateTracker_BitfsDrRecover, Scattershot_BitfsDrRecover_Solution>;
-using Alias_Scattershot_BitfsDrRecover = Scattershot<BinaryStateBin<16>, LibSm64, StateTracker_BitfsDrRecover, Scattershot_BitfsDrRecover_Solution>;
+using Alias_ScattershotThread_BitfsDrRecover = ScattershotThread<BinaryStateBin<16>, BitFSPlatformSim, StateTracker_BitfsDrRecover, Scattershot_BitfsDrRecover_Solution>;
+using Alias_Scattershot_BitfsDrRecover = Scattershot<BinaryStateBin<16>, BitFSPlatformSim, StateTracker_BitfsDrRecover, Scattershot_BitfsDrRecover_Solution>;
 
 class Scattershot_BitfsDrRecover : public Alias_ScattershotThread_BitfsDrRecover
 {

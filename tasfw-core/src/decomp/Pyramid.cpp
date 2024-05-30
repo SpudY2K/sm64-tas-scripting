@@ -1,66 +1,161 @@
 #include <sm64/Math.hpp>
+#include <sm64/ObjectFields.hpp>
+#include <sm64/Types.hpp>
+#include <sm64/UltraTypes.hpp>
 #include <cmath>
-#include <sm64/Trig.hpp>
 
-void linear_mtxf_mul_vec3f(Mat4& m, Vec3f& dst, Vec3f& v)
-{
-	for (int i = 0; i < 3; i++)
-	{
-		dst[i] = m[0][i] * v[0] + m[1][i] * v[1] + m[2][i] * v[2];
-	}
+/**
+ * Get Mario's position and store it in x, y, and z.
+ */
+void get_mario_pos(struct MarioState* m, f32* x, f32* y, f32* z) {
+    *x = m->pos[0];
+    *y = m->pos[1];
+    *z = m->pos[2];
 }
 
-void mtxf_align_terrain_normal(Mat4& dest, Vec3f& upDir, Vec3f& pos, s16 yaw)
-{
-	Vec3f lateralDir = {gSineTable[yaw], 0, gCosineTable[yaw]};
-	Vec3f leftDir;
-	Vec3f forwardDir;
-
-	vec3f_normalize(upDir);
-
-	vec3f_cross(leftDir, upDir, lateralDir);
-	vec3f_normalize(leftDir);
-
-	vec3f_cross(forwardDir, leftDir, upDir);
-	vec3f_normalize(forwardDir);
-
-	dest[0][0] = leftDir[0];
-	dest[0][1] = leftDir[1];
-	dest[0][2] = leftDir[2];
-	dest[3][0] = pos[0];
-
-	dest[1][0] = upDir[0];
-	dest[1][1] = upDir[1];
-	dest[1][2] = upDir[2];
-	dest[3][1] = pos[1];
-
-	dest[2][0] = forwardDir[0];
-	dest[2][1] = forwardDir[1];
-	dest[2][2] = forwardDir[2];
-	dest[3][2] = pos[2];
-
-	dest[0][3] = 0.0f;
-	dest[1][3] = 0.0f;
-	dest[2][3] = 0.0f;
-	dest[3][3] = 1.0f;
+/**
+ * Set Mario's position.
+ */
+void set_mario_pos(struct MarioState* m, f32 x, f32 y, f32 z) {
+    m->pos[0] = x;
+    m->pos[1] = y;
+    m->pos[2] = z;
 }
 
-/// Make vector 'dest' the cross product of vectors a and b.
-void vec3f_cross(Vec3f& dest, Vec3f& a, Vec3f& b)
-{
-	dest[0] = a[1] * b[2] - b[1] * a[2];
-	dest[1] = a[2] * b[0] - b[2] * a[0];
-	dest[2] = a[0] * b[1] - b[0] * a[1];
+ /**
+  * Creates a transform matrix on a variable passed in from given normals
+  * and the object's position.
+  */
+void create_transform_from_normals(struct Object* o, Mat4& transform, f32 xNorm, f32 yNorm, f32 zNorm) {
+    Vec3f normal;
+    Vec3f pos;
+
+    pos[0] = o->oPosX;
+    pos[1] = o->oPosY;
+    pos[2] = o->oPosZ;
+
+    normal[0] = xNorm;
+    normal[1] = yNorm;
+    normal[2] = zNorm;
+
+    mtxf_align_terrain_normal(transform, normal, pos, 0);
 }
 
-/// Scale vector 'dest' so it has length 1
-void vec3f_normalize(Vec3f& dest)
-{
-	//! Possible division by zero
-	float invsqrt =
-		1.0f / sqrtf(dest[0] * dest[0] + dest[1] * dest[1] + dest[2] * dest[2]);
+/**
+ * Initialize the object's transform matrix with Y being up.
+ */
+void bhv_platform_normals_init(struct Object* o) {
+    Mat4* transform = &o->transform;
 
-	dest[0] *= invsqrt;
-	dest[1] *= invsqrt;
-	dest[2] *= invsqrt;
+    o->oTiltingPyramidNormalX = 0.0f;
+    o->oTiltingPyramidNormalY = 1.0f;
+    o->oTiltingPyramidNormalZ = 0.0f;
+
+    create_transform_from_normals(o, *transform, 0.0f, 1.0f, 0.0f);
+}
+
+/**
+ * Returns a value that is src incremented/decremented by inc towards goal
+ * until goal is reached. Does not overshoot.
+ */
+f32 approach_by_increment(f32 goal, f32 src, f32 inc) {
+    f32 newVal;
+
+    if (src <= goal) {
+        if (goal - src < inc) {
+            newVal = goal;
+        }
+        else {
+            newVal = src + inc;
+        }
+    }
+    else if (goal - src > -inc) {
+        newVal = goal;
+    }
+    else {
+        newVal = src - inc;
+    }
+
+    return newVal;
+}
+
+/**
+ * Main behavior for the tilting pyramids in LLL/BitFS. These platforms calculate rough normals from Mario's position,
+ * then gradually tilt back moving Mario with them.
+ */
+void bhv_tilting_inverted_pyramid_loop(struct Object* o, struct MarioState* m) {
+    f32 dx;
+    f32 dy;
+    f32 dz;
+    f32 d;
+
+    Vec3f dist;
+    Vec3f posBeforeRotation;
+    Vec3f posAfterRotation;
+
+    // Mario's position
+    f32 mx;
+    f32 my;
+    f32 mz;
+
+    s32 marioOnPlatform = FALSE;
+    Mat4* transform = &o->transform;
+
+    if (m->marioObj->platform == o) {
+        get_mario_pos(m, &mx, &my, &mz);
+
+        dist[0] = m->marioObj->oPosX - o->oPosX;
+        dist[1] = m->marioObj->oPosY - o->oPosY;
+        dist[2] = m->marioObj->oPosZ - o->oPosZ;
+        linear_mtxf_mul_vec3f(*transform, posBeforeRotation, dist);
+
+        dx = m->marioObj->oPosX - o->oPosX;
+        dy = 500.0f;
+        dz = m->marioObj->oPosZ - o->oPosZ;
+        d = sqrtf(dx * dx + dy * dy + dz * dz);
+
+        //! Always true since dy = 500, making d >= 500.
+        if (d != 0.0f) {
+            // Normalizing
+            d = 1.0 / d;
+            dx *= d;
+            dy *= d;
+            dz *= d;
+        }
+        else {
+            dx = 0.0f;
+            dy = 1.0f;
+            dz = 0.0f;
+        }
+
+        if (o->oTiltingPyramidMarioOnPlatform == TRUE) {
+            marioOnPlatform++;
+        }
+
+        o->oTiltingPyramidMarioOnPlatform = TRUE;
+    }
+    else {
+        dx = 0.0f;
+        dy = 1.0f;
+        dz = 0.0f;
+        o->oTiltingPyramidMarioOnPlatform = FALSE;
+    }
+
+    // Approach the normals by 0.01f towards the new goal, then create a transform matrix and orient the object.
+    // Outside of the other conditionals since it needs to tilt regardless of whether Mario is on.
+    o->oTiltingPyramidNormalX = approach_by_increment(dx, o->oTiltingPyramidNormalX, 0.01f);
+    o->oTiltingPyramidNormalY = approach_by_increment(dy, o->oTiltingPyramidNormalY, 0.01f);
+    o->oTiltingPyramidNormalZ = approach_by_increment(dz, o->oTiltingPyramidNormalZ, 0.01f);
+    create_transform_from_normals(o, *transform, o->oTiltingPyramidNormalX, o->oTiltingPyramidNormalY, o->oTiltingPyramidNormalZ);
+
+    // If Mario is on the platform, adjust his position for the platform tilt.
+    if (marioOnPlatform) {
+        linear_mtxf_mul_vec3f(*transform, posAfterRotation, dist);
+        mx += posAfterRotation[0] - posBeforeRotation[0];
+        my += posAfterRotation[1] - posBeforeRotation[1];
+        mz += posAfterRotation[2] - posBeforeRotation[2];
+        set_mario_pos(m, mx, my, mz);
+    }
+
+    o->header.gfx.throwMatrix = transform;
 }

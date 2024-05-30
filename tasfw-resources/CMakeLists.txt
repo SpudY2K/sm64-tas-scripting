@@ -1,4 +1,5 @@
 add_library(tasfw-resources STATIC
+	"src/BitFSPlatformSim.cpp"
 	"src/LibSm64.cpp"
 	"src/PyramidUpdate.cpp"
 	"src/PyramidUpdate_Mario.cpp"

@@ -1,8 +1,8 @@
 #pragma once
-#include <sm64/Types.hpp>
 
 #ifndef OBJECT_FIELDS_H
-	#define OBJECT_FIELDS_H
+#define OBJECT_FIELDS_H
+#include <sm64/Types.hpp>
 
 /**
  * The array [0x88, 0x1C8) in struct Object consists of fields that can vary by
@@ -28,27 +28,15 @@
 		#define OBJECT_FIELD_S32(index) rawData.asS32[index]
 		#define OBJECT_FIELD_S16(index, subIndex) rawData.asS16[index][subIndex]
 		#define OBJECT_FIELD_F32(index) rawData.asF32[index]
-		#if !IS_64_BIT
-			#define OBJECT_FIELD_S16P(index) rawData.asS16P[index]
-			#define OBJECT_FIELD_S32P(index) rawData.asS32P[index]
-			#define OBJECT_FIELD_ANIMS(index) rawData.asAnims[index]
-			#define OBJECT_FIELD_WAYPOINT(index) rawData.asWaypoint[index]
-			#define OBJECT_FIELD_CHAIN_SEGMENT(index) rawData.asChainSegment[index]
-			#define OBJECT_FIELD_OBJ(index) rawData.asObject[index]
-			#define OBJECT_FIELD_SURFACE(index) rawData.asSurface[index]
-			#define OBJECT_FIELD_VPTR(index) rawData.asVoidPtr[index]
-			#define OBJECT_FIELD_CVPTR(index) rawData.asConstVoidPtr[index]
-		#else
-			#define OBJECT_FIELD_S16P(index) ptrData.asS16P[index]
-			#define OBJECT_FIELD_S32P(index) ptrData.asS32P[index]
-			#define OBJECT_FIELD_ANIMS(index) ptrData.asAnims[index]
-			#define OBJECT_FIELD_WAYPOINT(index) ptrData.asWaypoint[index]
-			#define OBJECT_FIELD_CHAIN_SEGMENT(index) ptrData.asChainSegment[index]
-			#define OBJECT_FIELD_OBJ(index) ptrData.asObject[index]
-			#define OBJECT_FIELD_SURFACE(index) ptrData.asSurface[index]
-			#define OBJECT_FIELD_VPTR(index) ptrData.asVoidPtr[index]
-			#define OBJECT_FIELD_CVPTR(index) ptrData.asConstVoidPtr[index]
-		#endif
+		#define OBJECT_FIELD_S16P(index) ptrData.asS16P[index]
+		#define OBJECT_FIELD_S32P(index) ptrData.asS32P[index]
+		#define OBJECT_FIELD_ANIMS(index) ptrData.asAnims[index]
+		#define OBJECT_FIELD_WAYPOINT(index) ptrData.asWaypoint[index]
+		#define OBJECT_FIELD_CHAIN_SEGMENT(index) ptrData.asChainSegment[index]
+		#define OBJECT_FIELD_OBJ(index) ptrData.asObject[index]
+		#define OBJECT_FIELD_SURFACE(index) ptrData.asSurface[index]
+		#define OBJECT_FIELD_VPTR(index) ptrData.asVoidPtr[index]
+		#define OBJECT_FIELD_CVPTR(index) ptrData.asConstVoidPtr[index]
 	#endif
 
 // 0x088 (0x00), the first field, is object-specific and defined below the
@@ -288,21 +276,21 @@
 	#define /*0x0FC*/ oBBallSpawnerPeriodMinus1 OBJECT_FIELD_S32(0x1D)
 
 	/* Bowser */
-	#define /*0x088*/ oBowserUnk88 OBJECT_FIELD_S32(0x00)
-	#define /*0x0F4*/ oBowserUnkF4 OBJECT_FIELD_S32(0x1B)
-	#define /*0x0F8*/ oBowserUnkF8 OBJECT_FIELD_S32(0x1C)
-	#define /*0x0FC*/ oBowserDistToCentre OBJECT_FIELD_F32(0x1D)
-	#define /*0x106*/ oBowserUnk106 OBJECT_FIELD_S16(0x1F, 1)
-	#define /*0x108*/ oBowserUnk108 OBJECT_FIELD_S16(0x20, 0)
-	#define /*0x10A*/ oBowserHeldAnglePitch OBJECT_FIELD_S16(0x20, 1)
+	#define /*0x088*/ oBowserCamAct          OBJECT_FIELD_S32(0x00)
+	#define /*0x0F4*/ oBowserStatus          OBJECT_FIELD_S32(0x1B)
+	#define /*0x0F8*/ oBowserTimer           OBJECT_FIELD_S32(0x1C)
+	#define /*0x0FC*/ oBowserDistToCenter    OBJECT_FIELD_F32(0x1D)
+	#define /*0x106*/ oBowserBitSJustJump    OBJECT_FIELD_S16(0x1F, 1)
+	#define /*0x108*/ oBowserRandSplitFloor  OBJECT_FIELD_S16(0x20, 0)
+	#define /*0x10A*/ oBowserHeldAnglePitch  OBJECT_FIELD_S16(0x20, 1)
 	#define /*0x10D*/ oBowserHeldAngleVelYaw OBJECT_FIELD_S16(0x21, 0)
-	#define /*0x10E*/ oBowserUnk10E OBJECT_FIELD_S16(0x21, 1)
-	#define /*0x110*/ oBowserUnk110 OBJECT_FIELD_S16(0x22, 0)
-	#define /*0x112*/ oBowserAngleToCentre OBJECT_FIELD_S16(0x22, 1)
-	#define /*0x1AC*/ oBowserUnk1AC OBJECT_FIELD_S16(0x49, 0)
-	#define /*0x1AE*/ oBowserUnk1AE OBJECT_FIELD_S16(0x49, 1)
-	#define /*0x1B0*/ oBowserEyesShut OBJECT_FIELD_S16(0x4A, 0)
-	#define /*0x1B2*/ oBowserUnk1B2 OBJECT_FIELD_S16(0x4A, 1)
+	#define /*0x10E*/ oBowserGrabbedStatus   OBJECT_FIELD_S16(0x21, 1)
+	#define /*0x110*/ oBowserIsReacting      OBJECT_FIELD_S16(0x22, 0)
+	#define /*0x112*/ oBowserAngleToCenter   OBJECT_FIELD_S16(0x22, 1)
+	#define /*0x1AC*/ oBowserTargetOpacity   OBJECT_FIELD_S16(0x49, 0)
+	#define /*0x1AE*/ oBowserEyesTimer       OBJECT_FIELD_S16(0x49, 1)
+	#define /*0x1B0*/ oBowserEyesShut        OBJECT_FIELD_S16(0x4A, 0)
+	#define /*0x1B2*/ oBowserRainbowLight    OBJECT_FIELD_S16(0x4A, 1)
 
 	/* Bowser Shockwave */
 	#define /*0x0F4*/ oBowserShockWaveUnkF4 OBJECT_FIELD_F32(0x1B)

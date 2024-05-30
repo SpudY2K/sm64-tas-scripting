@@ -7,7 +7,7 @@
 #include <sm64/SurfaceTerrains.hpp>
 #include <sm64/Camera.hpp>
 
-PyramidUpdateMem::PyramidUpdateMem(const LibSm64& resource, Object* pyramidLibSm64)
+PyramidUpdateMem::PyramidUpdateMem(const BitFSPlatformSim& resource, Object* pyramidLibSm64)
 {
 	frame = resource.getCurrentFrame();
 

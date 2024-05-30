@@ -1,56 +1,45 @@
 #pragma once
-#include <sm64/Types.hpp>
-
 #ifndef SURFACE_H
 #define SURFACE_H
+#include <sm64/Types.hpp>
 
-#define TERRAIN_LOAD_CONTINUE \
-	0x0041	// Stop loading vertices but continues to load other collision
-					// commands
+#define LEVEL_BOUNDARY_MAX  0x2000 // 8192
 
-#define SURFACE_0004 0x0004	 // Unused, has no function and has parameters
-#define SURFACE_FLOWING_WATER 0x000E	// Water (flowing), has parameters
-#define SURFACE_VERY_SLIPPERY 0x0013	// Very slippery, mostly used for slides
-#define SURFACE_SLIPPERY 0x0014				// Slippery
-#define SURFACE_NOT_SLIPPERY 0x0015		// Non-slippery, climbable
-#define SURFACE_DEEP_MOVING_QUICKSAND \
-	0x0024	// Moving quicksand (flowing, depth of 160 units)
-#define SURFACE_SHALLOW_MOVING_QUICKSAND \
-	0x0025	// Moving quicksand (flowing, depth of 25 units)
-#define SURFACE_MOVING_QUICKSAND \
-	0x0027	// Moving quicksand (flowing, depth of 60 units)
-#define SURFACE_NOISE_SLIPPERY 0x002A		// Slippery floor with noise
-#define SURFACE_HORIZONTAL_WIND 0x002C	// Horizontal wind, has parameters
-#define SURFACE_INSTANT_MOVING_QUICKSAND \
-	0x002D	// Quicksand (lethal, flowing)
-#define SURFACE_ICE \
-	0x002E	// Slippery Ice, in snow levels and THI's water floor
-#define SURFACE_HARD_SLIPPERY \
-	0x0035	// Hard and slippery (Always has fall damage)
-#define SURFACE_HARD_VERY_SLIPPERY \
-	0x0036	// Hard and very slippery (Always has fall damage)
-#define SURFACE_HARD_NOT_SLIPPERY \
-	0x0037	// Hard and Non-slippery (Always has fall damage)
-#define SURFACE_NOISE_VERY_SLIPPERY_73 \
-	0x0073	// Very slippery floor with noise, unused
-#define SURFACE_NOISE_VERY_SLIPPERY_74 \
-	0x0074	// Very slippery floor with noise, unused
-#define SURFACE_NOISE_VERY_SLIPPERY \
-	0x0075	// Very slippery floor with noise, used in CCM
-#define SURFACE_NO_CAM_COL_VERY_SLIPPERY \
-	0x0078	// Surface with no cam collision flag, very slippery with noise
-					// (THI)
-#define SURFACE_NO_CAM_COL_SLIPPERY \
-	0x0079	// Surface with no cam collision flag, slippery with noise (CCM,
-					// PSS and TTM slides)
-#define SURFACE_SWITCH \
-	0x007A	// Surface with no cam collision flag, non-slippery with noise,
-					// used by switches and Dorrie
+#define CELL_HEIGHT_LIMIT           20000
+#define FLOOR_LOWER_LIMIT           -11000
+#define FLOOR_LOWER_LIMIT_MISC      (FLOOR_LOWER_LIMIT + 1000)
+#define FLOOR_LOWER_LIMIT_SHADOW    (FLOOR_LOWER_LIMIT + 1000.0)
 
-#define SURFACE_CLASS_DEFAULT 0x0000
-#define SURFACE_CLASS_VERY_SLIPPERY 0x0013
-#define SURFACE_CLASS_SLIPPERY 0x0014
-#define SURFACE_CLASS_NOT_SLIPPERY 0x0015
+struct WallCollisionData {
+    /*0x00*/ f32 x, y, z;
+    /*0x0C*/ f32 offsetY;
+    /*0x10*/ f32 radius;
+    /*0x14*/ u8 filler[2];
+    /*0x16*/ s16 numWalls;
+    /*0x18*/ struct Surface* walls[4];
+};
+
+struct FloorGeometry {
+    u8 filler[16]; // possibly position data?
+    f32 normalX;
+    f32 normalY;
+    f32 normalZ;
+    f32 originOffset;
+};
+
+struct SurfaceNode {
+	struct SurfaceNode* next;
+	struct Surface* surface;
+};
+
+struct Surfaces {
+    struct SurfaceNode* staticFloors;
+    struct SurfaceNode* staticWalls;
+    struct SurfaceNode* staticCeilings;
+    struct SurfaceNode* dynamicFloors;
+    struct SurfaceNode* dynamicWalls;
+    struct SurfaceNode* dynamicCeilings;
+};
 
 void find_floor(
 	Vec3f* marioPos, struct Surface* surfaces, int surfaceCount,
@@ -68,4 +57,12 @@ static void get_object_vertices(
 static void read_surface_data(
 	short* vertexData, short** vertexIndices, struct Surface* surface);
 
+void add_surface(s16 dynamic, struct Surface* surface, struct SurfaceNode* newNode, struct Surfaces* surfaceLists);
+bool read_surface_data(TerrainData* vertexData, struct Surface* surface, struct Object* o);
+s32 f32_find_wall_collision(struct Surfaces* surfaceLists, f32* xPtr, f32* yPtr, f32* zPtr, f32 offsetY, f32 radius);
+s32 find_wall_collisions(struct Surfaces* surfaceLists, WallCollisionData* colData);
+f32 find_ceil(struct Surfaces* surfaceLists, f32 posX, f32 posY, f32 posZ, struct Surface** pceil);
+f32 find_floor(struct Surfaces* surfaceLists, f32 xPos, f32 yPos, f32 zPos, struct Surface** pfloor);
+f32 find_water_level(f32 x, f32 z);
+f32 find_poison_gas_level(f32 x, f32 z);
 #endif

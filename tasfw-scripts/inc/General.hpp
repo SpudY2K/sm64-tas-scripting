@@ -2,8 +2,9 @@
 
 #include <tasfw/Script.hpp>
 #include <LibSm64.hpp>
+#include <BitFSPlatformSim.hpp>
 
-class GetMinimumDownhillWalkingAngle : public Script<LibSm64>
+class GetMinimumDownhillWalkingAngle : public Script<BitFSPlatformSim>
 {
 public:
 	class CustomScriptStatus
@@ -31,7 +32,7 @@ private:
 	int16_t _targetAngle;
 };
 
-class TryHackedWalkOutOfBounds : public Script<LibSm64>
+class TryHackedWalkOutOfBounds : public Script<BitFSPlatformSim>
 {
 public:
 	class CustomScriptStatus
@@ -56,7 +57,7 @@ private:
 	float _speed;
 };
 
-class BrakeToIdle : public Script<LibSm64>
+class BrakeToIdle : public Script<BitFSPlatformSim>
 {
 public:
 	class CustomScriptStatus

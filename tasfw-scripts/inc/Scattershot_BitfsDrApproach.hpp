@@ -8,7 +8,7 @@
 #include <sm64/ObjectFields.hpp>
 #include <sm64/Trig.hpp>
 
-class StateTracker_BitfsDrApproach : public Script<LibSm64>
+class StateTracker_BitfsDrApproach : public Script<BitFSPlatformSim>
 {
 public:
     enum class Phase
@@ -211,8 +211,8 @@ public:
     float xzSum = 0;
 };
 
-using Alias_ScattershotThread_BitfsDrApproach = ScattershotThread<BinaryStateBin<16>, LibSm64, StateTracker_BitfsDrApproach, Scattershot_BitfsDrApproach_Solution>;
-using Alias_Scattershot_BitfsDrApproach = Scattershot<BinaryStateBin<16>, LibSm64, StateTracker_BitfsDrApproach, Scattershot_BitfsDrApproach_Solution>;
+using Alias_ScattershotThread_BitfsDrApproach = ScattershotThread<BinaryStateBin<16>, BitFSPlatformSim, StateTracker_BitfsDrApproach, Scattershot_BitfsDrApproach_Solution>;
+using Alias_Scattershot_BitfsDrApproach = Scattershot<BinaryStateBin<16>, BitFSPlatformSim, StateTracker_BitfsDrApproach, Scattershot_BitfsDrApproach_Solution>;
 
 class Scattershot_BitfsDrApproach : public Alias_ScattershotThread_BitfsDrApproach
 {

@@ -2,6 +2,7 @@
 
 #include <tasfw/Script.hpp>
 #include "LibSm64.hpp"
+#include "BitFSPlatformSim.hpp"
 #include <PyramidUpdate.hpp>
 
 #ifndef SCRIPT_BITFS_PYRAMID_OSCILLATION_H
@@ -20,7 +21,7 @@ public:
 	bool ignoreXzSum = false;
 };
 
-class BitFsPyramidOscillation : public Script<LibSm64>
+class BitFsPyramidOscillation : public Script<BitFSPlatformSim>
 {
 public:
 	class CustomScriptStatus
@@ -49,7 +50,7 @@ private:
 	bool _alwaysBrake = false;
 };
 
-class BitFsPyramidOscillation_TurnAroundAndRunDownhill : public Script<LibSm64>
+class BitFsPyramidOscillation_TurnAroundAndRunDownhill : public Script<BitFSPlatformSim>
 {
 public:
 	class CustomScriptStatus
@@ -77,7 +78,7 @@ private:
 	BitFsPyramidOscillation_ParamsDto _oscillationParams;
 };
 
-class BitFsPyramidOscillation_TurnThenRunDownhill_AtAngle : public Script<LibSm64>
+class BitFsPyramidOscillation_TurnThenRunDownhill_AtAngle : public Script<BitFSPlatformSim>
 {
 public:
 	class CustomScriptStatus
@@ -113,7 +114,7 @@ private:
 		const ScriptStatus<BitFsPyramidOscillation_TurnAroundAndRunDownhill>& status2);
 };
 
-class BitFsPyramidOscillation_TurnThenRunDownhill : public Script<LibSm64>
+class BitFsPyramidOscillation_TurnThenRunDownhill : public Script<BitFSPlatformSim>
 {
 public:
 	class CustomScriptStatus
@@ -146,7 +147,7 @@ private:
 
 // Find the optimal result of BitFsPyramidOscillation_TurnThenRunDownhill over a
 // range of frames
-class BitFsPyramidOscillation_Iteration : public Script<LibSm64>
+class BitFsPyramidOscillation_Iteration : public Script<BitFSPlatformSim>
 {
 public:
 	class CustomScriptStatus
@@ -180,7 +181,7 @@ private:
 		const ScriptStatus<BitFsPyramidOscillation_TurnThenRunDownhill>& status2);
 };
 
-class BitFsPyramidOscillation_RunDownhill : public Script<LibSm64>
+class BitFsPyramidOscillation_RunDownhill : public Script<BitFSPlatformSim>
 {
 public:
 	class CustomScriptStatus

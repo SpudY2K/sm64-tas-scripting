@@ -3,6 +3,7 @@
 #include "tasfw/Resource.hpp"
 #include <sm64/Types.hpp>
 #include "LibSm64.hpp"
+#include "BitFSPlatformSim.hpp"
 
 #ifndef PYRAMIDUPDATE_H
 #define PYRAMIDUPDATE_H
@@ -94,7 +95,7 @@ public:
 	uint32_t inputs = 0;
 
 	PyramidUpdateMem() = default;
-	PyramidUpdateMem(const LibSm64& resource, Object* pyramidLibSm64);
+	PyramidUpdateMem(const BitFSPlatformSim& resource, Object* pyramidLibSm64);
 
 	static bool FloorIsSlope(Sm64Surface* floor, u32 action);
 	static short GetFloorClass(Sm64Surface* floor, u32 action);
